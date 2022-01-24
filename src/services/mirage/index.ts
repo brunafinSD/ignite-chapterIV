@@ -36,6 +36,8 @@ export function makeServer() {
 
       // vai demorar 750 milissegundos para carregar
       this.timing = 750;
+
+      this.get('/users/:id');
       // quando chamar a rota users deve retornar a lista completa de usuarios
       this.get('/users', function (schema, request) {
         const { page = 1, per_page = 10 } = request.queryParams
