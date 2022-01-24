@@ -6,11 +6,17 @@ import { Pagination } from "../../components/Pagination";
 import { Sidebar } from "../../components/Sidebar";
 import NextLink from 'next/link';
 import { useUsers } from "../../services/hooks/useUsers";
+// import { getUsers} from "../../services/hooks/useUsers";
 import { queryClient } from "../../services/queryClient";
 import { api } from "../../services/api";
+import { GetServerSideProps } from "next";
 
-export default function UserList() {
+export default function UserList({ users }) {
   const [page, setPage] = useState(1);
+  // const { data, isLoading, isFetching, error } = useUsers(page, {
+  //   initialData: users,
+  // });
+
   const { data, isLoading, isFetching, error } = useUsers(page);
 
   const isWideVersion = useBreakpointValue({
@@ -18,7 +24,7 @@ export default function UserList() {
     lg: true,
   });
 
-  async function handlePrefetchUser(userId: string){
+  async function handlePrefetchUser(userId: string) {
     await queryClient.prefetchQuery(['user', userId], async () => {
       const response = await api.get(`users/${userId}`);
 
@@ -44,7 +50,7 @@ export default function UserList() {
           <Flex mb="8" justify="space-between" align="center">
             <Heading size="lg" fontWeight="normal">
               Usuários
-              {!isLoading && isFetching && <Spinner size="sm" color="gray.500" ml="4"/>}
+              {!isLoading && isFetching && <Spinner size="sm" color="gray.500" ml="4" />}
             </Heading>
             <NextLink href="/users/create" passHref>
               <Button
@@ -89,7 +95,7 @@ export default function UserList() {
                         <Td>
                           <Box>
                             <Link color="purple.400" onMouseEnter={() => handlePrefetchUser(user.id)}>
-                            <Text fontWeight="bold">{user.name}</Text>
+                              <Text fontWeight="bold">{user.name}</Text>
                             </Link>
                             <Text fontSize="sm" color="gray.300">{user.email}</Text>
                           </Box>
@@ -123,3 +129,13 @@ export default function UserList() {
     </Box>
   );
 }
+
+// export const getServerSideProps: GetServerSideProps = async () => {
+//   const { totalCount, users } = await getUsers(1);
+
+//   return {
+//     props: {
+//       users
+//     }
+//   }
+// }
